@@ -2,7 +2,7 @@
   <div>
       <DefinitionSection :word="upperCaseWord" :isWord="isWord" :definition="definition" />
       <div id="input-section">
-        <input class="input" type="text" v-model="word" v-on:input="checkWord" placeholder="Please enter your word...">
+        <input class="input" :value="word" type="text" @input="checkWord" placeholder="Please enter your word...">
       </div>
     </div>
 </template>
@@ -29,7 +29,8 @@ export default {
   },
   created: function() {},
   methods: {
-    checkWord() {
+    checkWord(evt) {
+        this.word = evt.target.value;
         this.upperCaseWord = this.word.toUpperCase();
         if (this.upperCaseWord in this.dictionary) {
            this.isWord = true;
