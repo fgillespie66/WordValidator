@@ -9,7 +9,7 @@
 
 <script>
 import InputSection from "../components/InputSection.vue";
-import dictionary from "../resources/definitions.js";
+//import dictionary from "../resources/definitions.js";
 
 export default {
   name: "WordValidator",
@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-        dictionary: dictionary,
+        dictionary: this.dictionary,
     };
   },
 };

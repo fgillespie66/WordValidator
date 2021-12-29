@@ -5,6 +5,8 @@ import App from "./App.vue";
 import WordValidator from "./views/WordValidator.vue";
 import PageNotFound from "./views/PageNotFound.vue";
 
+//import dictionary from "./resources/definitions-small.js"
+
 export const eventBus = new Vue();
 
 Vue.config.productionTip = false;
@@ -16,6 +18,8 @@ export const router = new VueRouter({
     { path: "*", component: PageNotFound, props: true },
   ],
 });
+
+Vue.prototype.dictionary = window.dictionary;
 
 new Vue({
   el: "#app",
