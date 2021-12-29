@@ -4,11 +4,16 @@
       <div id="input-section">
         <input class="input" :value="word" type="text" @input="checkWord" placeholder="Please enter your word...">
       </div>
+      {{ log }}
     </div>
 </template>
 
 <script>
 import DefinitionSection from "./DefinitionSection.vue";
+//import "https://unpkg.com/tiny-trie@0.2.6/dist/tiny-trie.min.js";
+import "../../public/resources/tiny-trie.min.js"
+//import { PackedPrefixTinyTrie } from "../../public/resources/fast_packed_trie.js";
+import { PackedTrie } from "../../public/resources/packed-trie.js"
 
 export default {
   name: "InputSection",
@@ -25,6 +30,7 @@ export default {
         isWord: false,
         definition: "",
         log: "",
+        lex: new PackedTrie(window.packed_lexicon),
     };
   },
   created: function() {},
@@ -32,11 +38,20 @@ export default {
     checkWord(evt) {
         this.word = evt.target.value;
         this.upperCaseWord = this.word.toUpperCase();
-        if (this.upperCaseWord in this.dictionary) {
-           this.isWord = true;
-           this.definition = this.dictionary[this.upperCaseWord];
-        } else {
+        const query = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true}) : null;
+        if (query && query.length > 0) {
+          if (query[0] === this.upperCaseWord) {
+            this.isWord = true;
+            this.definition = this.dictionary ? this.dictionary[this.upperCaseWord] : "unknown definition";
+          } else {
             this.isWord = false;
+          }
+          const words = query;
+          this.log = "";
+          words.forEach((word) => this.log += " " + word);
+        } else {
+          this.isWord = false;
+          this.log = "";
         }
     }
   },
