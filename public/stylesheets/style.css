@@ -4,12 +4,15 @@
 
 :root {
   --theme-color: rgb(7, 94, 94);
-  --background-color: rgb(204, 247, 243);
+  --page-background-color: rgb(204, 247, 243);
+  --page-background-color-darker: rgb(159, 211, 206);
+  --box-background-color: rgb(252, 244, 230);
 }
 
 html {
   --light-border: 1px solid lightgray;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background: var(--background-color);
+  background: var(--page-background-color);
   color: var(--theme-color);
+  padding: 1% 5%;
 }

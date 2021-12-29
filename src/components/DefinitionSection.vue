@@ -32,7 +32,7 @@ export default {
 .definition-section {
     padding: 1em;
     font-size: large;
-    background-color:rgb(252, 244, 230);
+    background-color: var(--box-background-color);
     border-radius: 0.5em;
     box-shadow: 0.0 0.05em 0.25em rgba(0, 0, 0, 0.432);
     min-height: 10em;
