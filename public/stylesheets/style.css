@@ -5,7 +5,7 @@
 :root {
   --theme-color: rgb(7, 94, 94);
   --page-background-color: rgb(204, 247, 243);
-  --page-background-color-darker: rgb(159, 211, 206);
+  --page-background-color-darker: rgb(159, 211, 206, 0.5);
   --box-background-color: rgb(252, 244, 230);
 }
 

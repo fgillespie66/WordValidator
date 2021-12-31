@@ -15,6 +15,7 @@ Vue.use(VueRouter);
 export const router = new VueRouter({
   routes: [
     { path: "/", component: WordValidator, props: true },
+    { path: "/:queryWord", component: WordValidator, props: true },
     { path: "*", component: PageNotFound, props: true },
   ],
 });

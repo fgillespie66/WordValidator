@@ -22,4 +22,4 @@ git commit -m 'deploy'
 # if you are deploying to https://<USERNAME>.github.io/<REPO>
 git push -f git@github.com:fgillespie66/WordValidator.git master:gh-pages
 
-cd -
+cd ..

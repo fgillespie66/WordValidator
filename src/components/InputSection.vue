@@ -2,11 +2,11 @@
   <div>
       <DefinitionSection :word="upperCaseWord" :isWord="isWord" :definition="definition" />
       <div id="input-section">
-        <input class="input" :value="word" type="text" @input="checkWord" placeholder="Please enter your word...">
+        <input class="input" :value="word" type="text" @input="handleInput" placeholder="Please enter your word...">
       </div>
       <ul class="completions">
-        <li class="completion" v-for="completion in completions.slice(0, 15)" :key="completion">
-          {{completion}}
+        <li class="completion" v-for="completion in completions.slice(1, 15)" :key="completion">
+          <router-link :to=completion>{{completion}}</router-link>
         </li>
         <li class="completion" v-if="completions.length > 15">
           ... and {{completions.length-15}} more
@@ -42,9 +42,18 @@ export default {
     };
   },
   created: function() {},
+  mounted: function() {
+    if (this.$route.params.queryWord) {
+      this.word = this.$route.params.queryWord;
+      this.checkWord();
+    } 
+  },
   methods: {
-    checkWord(evt) {
+    handleInput(evt) {
         this.word = evt.target.value;
+        this.checkWord();
+    },
+    checkWord() {
         this.upperCaseWord = this.word.toUpperCase();
         this.completions = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true}) : [];
         if (this.completions.length > 0) {
@@ -59,6 +68,12 @@ export default {
         }
     }
   }, 
+  watch: {
+    '$route.params.queryWord': function(queryWord) {
+      this.word = queryWord;
+      this.checkWord();
+    }
+  }
 };
 </script>
 
@@ -78,15 +93,32 @@ export default {
   max-height: 10em;
   min-height: 5em;
   padding: 1em;
+  margin: 0em;
   font-size: large;
   background-color: var(--page-background-color-darker);
   border-radius: 0.5em;
   box-shadow: 0.0 0.05em 0.25em rgba(0, 0, 0, 0.432);
   list-style-type: none; /* Remove bullets */
-
+  display: flex;
+  flex-flow: column wrap;
+  align-content: center;
+  align-items: center;
 }
 
 .completion {
+  display: inline-block;
+}
+
+.completion > a {
+  padding: 0.25em;
+  text-decoration: none;
+  color: var(--theme-color);
+  border-radius: 0.5em;
+}
+
+.completion > a:hover {
+  background-color: var(--page-background-color);
+  /* color: white; */
 }
 
 </style>
