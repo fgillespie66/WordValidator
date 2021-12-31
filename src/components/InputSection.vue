@@ -103,10 +103,11 @@ export default {
   flex-flow: column wrap;
   align-content: center;
   align-items: center;
+  gap: 0em 1em;
 }
 
 .completion {
-  display: inline-block;
+  display: inline-flex;
 }
 
 .completion > a {
