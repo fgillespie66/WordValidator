@@ -7,6 +7,7 @@
   --page-background-color: rgb(204, 247, 243);
   --page-background-color-darker: rgb(159, 211, 206, 0.5);
   --box-background-color: rgb(252, 244, 230);
+  --completion-column-width: 0px;
 }
 
 html {

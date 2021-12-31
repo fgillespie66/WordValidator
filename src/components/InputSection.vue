@@ -3,16 +3,18 @@
       <DefinitionSection :word="upperCaseWord" :isWord="isWord" :definition="definition" />
       <div id="input-section">
         <input class="input" :value="word" type="text" @input="handleInput" placeholder="Please enter your word...">
-      </div>
-      <ul class="completions">
-        <li class="completion" v-for="completion in completions.slice(1, 15)" :key="completion">
-          <router-link :to=completion>{{completion}}</router-link>
-        </li>
-        <li class="completion" v-if="completions.length > 15">
-          ... and {{completions.length-15}} more
-        </li>
-      </ul>
     </div>
+    <div class="completions-contain">
+    <ul class="completions">
+      <li class="completion" v-for="completion in completionsPreview" :key="completion">
+        <router-link :to=completion>{{completion}}</router-link>
+      </li>
+      <li class="completion" v-if="completions.length != completionsPreview.length">
+        +{{completions.length-completionsPreview.length}} more
+      </li>
+    </ul>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -21,6 +23,17 @@ import DefinitionSection from "./DefinitionSection.vue";
 import "../../public/resources/tiny-trie.min.js"
 //import { PackedPrefixTinyTrie } from "../../public/resources/fast_packed_trie.js";
 import { PackedTrie } from "../../public/resources/packed-trie.js"
+
+// Compute width of a string (calibrated to Helvetica)
+// https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript
+function measureTextWidth(str) {
+    const widths = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.2796875,0.2765625,0.3546875,0.5546875,0.5546875,0.8890625,0.665625,0.190625,0.3328125,0.3328125,0.3890625,0.5828125,0.2765625,0.3328125,0.2765625,0.3015625,0.5546875,0.5546875,0.5546875,0.5546875,0.5546875,0.5546875,0.5546875,0.5546875,0.5546875,0.5546875,0.2765625,0.2765625,0.584375,0.5828125,0.584375,0.5546875,1.0140625,0.665625,0.665625,0.721875,0.721875,0.665625,0.609375,0.7765625,0.721875,0.2765625,0.5,0.665625,0.5546875,0.8328125,0.721875,0.7765625,0.665625,0.7765625,0.721875,0.665625,0.609375,0.721875,0.665625,0.94375,0.665625,0.665625,0.609375,0.2765625,0.3546875,0.2765625,0.4765625,0.5546875,0.3328125,0.5546875,0.5546875,0.5,0.5546875,0.5546875,0.2765625,0.5546875,0.5546875,0.221875,0.240625,0.5,0.221875,0.8328125,0.5546875,0.5546875,0.5546875,0.5546875,0.3328125,0.5,0.2765625,0.5546875,0.5,0.721875,0.5,0.5,0.5,0.3546875,0.259375,0.353125,0.5890625];
+    const avg = 0.5279276315789471;
+  return str
+    .split('')
+    .map(c => c.charCodeAt(0) < widths.length ? widths[c.charCodeAt(0)] : avg)
+        .reduce((cur, acc) => acc + cur);
+}
 
 export default {
   name: "InputSection",
@@ -38,7 +51,8 @@ export default {
         definition: "",
         log: "",
         lex: new PackedTrie(window.packed_lexicon),
-        completions: []
+        completions: [],
+        completionsPreview: [],
     };
   },
   created: function() {},
@@ -46,7 +60,7 @@ export default {
     if (this.$route.params.queryWord) {
       this.word = this.$route.params.queryWord;
       this.checkWord();
-    } 
+    }
   },
   methods: {
     handleInput(evt) {
@@ -66,48 +80,61 @@ export default {
         } else {
           this.isWord = false;
         }
+
+        if (this.isWord) this.completions.shift(); // drop word from the completions list
+        this.completionsPreview = this.completions.slice(0, 15);
+        let completionsWidth = measureTextWidth("+" + (this.completions.length - this.completionsPreview.length) + " more");
+        this.completionsPreview.forEach(completion => completionsWidth = Math.max(completionsWidth, measureTextWidth(completion)))
+        // Get the root element
+        const r = document.querySelector(':root');
+        r.style.setProperty('--completion-column-width', (completionsWidth + 1) + 'em');
     }
-  }, 
+  },
   watch: {
     '$route.params.queryWord': function(queryWord) {
       this.word = queryWord;
       this.checkWord();
     }
   }
+
+    /*  grid-auto-columns: repeat( auto-fit, minmax(var(--completion-column-width), 1fr) ); */
 };
 </script>
 
 <style>
 .input {
-    margin: 1em 0em;
-    padding: 0.3em;
-    font-size: large;
-    width: 100%;
-    border-radius: 0.5em;
-    border: 0px;
-    box-shadow: 0.0 0.05em 0.25em rgba(0, 0, 0, 0.432);
+  margin: 1em 0em;
+  padding: 0.3em;
+  font-size: large;
+  width: 100%;
+  border-radius: 0.5em;
+  border: 0px;
+  box-shadow: 0.0 0.05em 0.25em rgba(0, 0, 0, 0.432);
 }
 
-.completions {
+/* Hack to allow vertical scrolling in columnar layout */
+/* https://stackoverflow.com/questions/36503329/css-columns-overflow-y-scroll-issue/36503666 */
+.completions-contain {
   overflow-y: auto;
-  max-height: 50vh;
-  min-height: 5em;
+  max-height: 10em;
   padding: 1em;
   margin: 0em;
   font-size: large;
   background-color: var(--page-background-color-darker);
   border-radius: 0.5em;
   box-shadow: 0.0 0.05em 0.25em rgba(0, 0, 0, 0.432);
+}
+
+.completions {
+  padding: 0;
+  margin: 0;
+  max-height: 1000em;
+  min-height: 5em;
   list-style-type: none; /* Remove bullets */
-  display: flex;
-  flex-flow: column wrap;
-  align-content: center;
-  align-items: center;
-  gap: 0em 1em;
+  column-width: var(--completion-column-width);
 }
 
 .completion {
-  display: inline-flex;
 }
 
 .completion > a {
