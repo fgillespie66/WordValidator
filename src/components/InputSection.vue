@@ -90,7 +90,7 @@ export default {
 
 .completions {
   overflow-y: auto;
-  max-height: 10em;
+  max-height: 50vh;
   min-height: 5em;
   padding: 1em;
   margin: 0em;
