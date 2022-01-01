@@ -69,7 +69,7 @@ export default {
     },
     checkWord() {
         this.upperCaseWord = this.word.toUpperCase();
-        this.completions = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true}) : [];
+        this.completions = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true, wildcard:"?"}) : [];
         if (this.completions.length > 0) {
           if (this.completions[0] === this.upperCaseWord) {
             this.isWord = true;
