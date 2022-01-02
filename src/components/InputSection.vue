@@ -69,7 +69,21 @@ export default {
     },
     checkWord() {
         this.upperCaseWord = this.word.toUpperCase();
-        this.completions = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true, wildcard:"?"}) : [];
+
+        let checkPlainText = /^[A-Z]*$/;
+        if (checkPlainText.test(this.upperCaseWord)) {
+            this.completions = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true, wildcard:"?"}) : [];
+        } else {
+            this.completions = [];
+            let queryRegexp = new RegExp("^"+this.word+"$");
+            for (const key in this.dictionary) {
+                if (queryRegexp.test(key) || queryRegexp.test(key.toLowerCase())){
+                    this.completions.push(key);
+                }
+            }
+        }
+
+
         if (this.completions.length > 0) {
           if (this.completions[0] === this.upperCaseWord) {
             this.isWord = true;
