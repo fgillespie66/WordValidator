@@ -70,9 +70,9 @@ export default {
     checkWord() {
         this.upperCaseWord = this.word.toUpperCase();
 
-        let checkPlainText = /^[A-Z]*$/;
+        let checkPlainText = /^([A-Z]|\.)*$/;
         if (checkPlainText.test(this.upperCaseWord)) {
-            this.completions = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true, wildcard:"?"}) : [];
+            this.completions = this.word.length > 0 ? this.lex.search(this.upperCaseWord, {prefix:true, wildcard:"."}) : [];
         } else {
             this.completions = [];
             let queryRegexp = new RegExp("^"+this.word+"$");
