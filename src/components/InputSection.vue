@@ -2,7 +2,8 @@
   <div>
       <DefinitionSection :word="upperCaseWord" :isWord="isWord" :definition="definition" />
       <div id="input-section">
-        <input class="input" :value="word" type="text" @input="handleInput" placeholder="Please enter your word...">
+    <input class="input" :value="word" type="text" @input="handleInput" placeholder="Please enter your word...">
+    <input class="input" :value="splitString" type="text" v-on:keyup.enter="handleSplitInput" placeholder="word lengths here">
     </div>
     <div class="completions-contain">
     <ul class="completions">
@@ -35,6 +36,29 @@ function measureTextWidth(str) {
         .reduce((cur, acc) => acc + cur);
 }
 
+function allPermutations(arr) {
+    const length = arr.length;
+    let result = [arr.slice()];
+    let c = new Array(length).fill(0);
+    let i = 1, k, p;
+
+    while (i < length) {
+        if (c[i] < i) {
+            k = i % 2 && c[i];
+            p = arr[i];
+            arr[i] = arr[k];
+            arr[k] = p;
+            ++c[i];
+            i = 1;
+            result.push(arr.slice());
+        } else {
+            c[i] = 0;
+            ++i;
+        }
+    }
+    return result;
+}
+
 export default {
   name: "InputSection",
   components: {
@@ -53,6 +77,9 @@ export default {
         lex: new PackedTrie(window.packed_lexicon),
         completions: [],
         completionsPreview: [],
+        trigrams: [],
+        wordLengths: [],
+        splitString: ""
     };
   },
   created: function() {},
@@ -65,7 +92,46 @@ export default {
   methods: {
     handleInput(evt) {
         this.word = evt.target.value;
-        this.checkWord();
+        this.trigrams = this.word.split(/[ ,]+/);
+        this.trigramSearch();
+    },
+    handleSplitInput(evt) {
+        this.wordLengths = evt.target.value.split(/[ ,]+/);
+        this.wordLengths = this.wordLengths.map( x => parseInt(x));
+        this.trigramSearch();
+
+    },
+    trigramSearch() {
+        if (!this.wordLengths.length) return;
+        console.log("searching...")
+        // console.log(this.wordLengths);
+        // console.log(this.trigrams);
+        // console.log(allPermutations(this.trigrams));
+
+        let solutions = [];
+        allPermutations(this.trigrams).forEach((trigramOrdering) => {
+            const query = trigramOrdering.join("");
+            const queryWords = [];
+            let beginIndex = 0;
+            for (let i = 0; i < this.wordLengths.length; i++) {
+                queryWords.push(query.slice(beginIndex, beginIndex + this.wordLengths[i]));
+                beginIndex += this.wordLengths[i];
+            }
+
+            let nValid = 0;
+            const answers = [];
+            // let hasThe = false;
+            queryWords.forEach((w) => {
+                answers.push(this.lex.search(w.toUpperCase(), {prefix:false, wildcard: "?"}));
+                if (answers[answers.length-1].length > 0) nValid+=1;
+                // if (answers[answers.length-1].includes("THE")) hasThe = true;
+            });
+            // if (hasThe)
+            solutions.push({n: nValid, content: answers, query: queryWords});
+        });
+
+        solutions.sort(function(a, b){return b.n-a.n;});
+        console.log(solutions);
     },
     checkWord() {
         this.upperCaseWord = this.word.toUpperCase();
