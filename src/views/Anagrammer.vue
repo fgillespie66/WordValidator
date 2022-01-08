@@ -5,12 +5,14 @@
     </header>
     <InputSection @textInput="checkInputWord" />
     <CompletionSection :completions="completions" />
+    <Navigation />
   </div>
 </template>
 
 <script>
 import InputSection from "../components/InputSection.vue";
 import CompletionSection from "../components/CompletionSection.vue";
+import Navigation from "../components/Navigation.vue";
 
 export default {
   name: "Anagrammer",
@@ -18,6 +20,7 @@ export default {
   components: {
     InputSection,
     CompletionSection,
+    Navigation,
   },
   data() {
     return {

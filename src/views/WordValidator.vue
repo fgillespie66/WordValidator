@@ -6,6 +6,7 @@
     <DefinitionSection :word="upperCaseWord" :isWord="isWord" :definition="definition" />
     <InputSection @textInput="checkInputWord" />
     <CompletionSection :completions="completions"/>
+    <Navigation/>
   </div>
 </template>
 
@@ -13,6 +14,7 @@
 import DefinitionSection from "../components/DefinitionSection.vue";
 import InputSection from "../components/InputSection.vue";
 import CompletionSection from "../components/CompletionSection.vue";
+import Navigation from "../components/Navigation.vue";
 import { PackedTrie } from "../../public/resources/packed-trie.js"
 
 export default {
@@ -22,6 +24,7 @@ export default {
       DefinitionSection,
       InputSection,
       CompletionSection,
+      Navigation,
   },
   data() {
     return {
