@@ -1,0 +1,19 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --theme-color: rgb(7, 94, 94);
+  --page-background-color: rgb(204, 247, 243);
+  --page-background-color-darker: rgb(159, 211, 206, 0.5);
+  --box-background-color: rgb(252, 244, 230);
+  --completion-column-width: 0px;
+}
+
+html {
+  --light-border: 1px solid lightgray;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: var(--page-background-color);
+  color: var(--theme-color);
+  padding: 1% 5%;
+}
