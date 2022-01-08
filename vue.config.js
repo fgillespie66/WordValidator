@@ -1,5 +1,5 @@
 module.exports = {
-    publicPath: process.env.NODE_ENV === 'production' ? '/WordValidator/': '/', 
+    publicPath: process.env.NODE_ENV === 'production' ? '/WordValidator/': '/',
     "devServer": {
       "proxy": {
         "/api": {
