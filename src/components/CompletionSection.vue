@@ -111,7 +111,8 @@ export default {
 /* https://stackoverflow.com/questions/36503329/css-columns-overflow-y-scroll-issue/36503666 */
 .completions-contain {
   overflow-y: auto;
-  max-height: 10em;
+  min-height: 10em;
+  max-height: 80vh;
   padding: 1em;
   margin: 0em;
   font-size: large;
@@ -123,7 +124,6 @@ export default {
 .completions {
   padding: 0;
   margin: 0;
-  max-height: 1000em;
   min-height: 5em;
   list-style-type: none; /* Remove bullets */
   column-width: var(--completion-column-width);
