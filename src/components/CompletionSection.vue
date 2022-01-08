@@ -22,13 +22,7 @@
           +{{ completions.length - shownCompletions.length }} more
         </a>
       </li>
-      <li
-        class="completion"
-        v-if="
-          completions.length > 0 &&
-          completions.length == shownCompletions.length
-        "
-      >
+      <li class="completion" v-else-if="completions.length > defaultLength">
         <a
           @click.prevent="
             showAll = false;
@@ -78,11 +72,14 @@ export default {
   data() {
     return {
       showAll: false,
+      defaultLength: 15,
     };
   },
   computed: {
     shownCompletions: function () {
-      return this.showAll ? this.completions : this.completions.slice(0, 15);
+      return this.showAll
+        ? this.completions
+        : this.completions.slice(0, this.defaultLength);
     },
   },
   watch: {
