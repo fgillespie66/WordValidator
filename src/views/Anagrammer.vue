@@ -47,13 +47,25 @@ export default {
 
       let checkPlainText = /^([A-Z]|\.)*$/;
       if (checkPlainText.test(this.upperCaseWord)) {
-        const sortedWord = this.upperCaseWord.split("").sort().join("");
-        const wordLen = sortedWord.length;
+        const wordLen = this.upperCaseWord.length;
+        const sortedChars = this.upperCaseWord.split("").sort();
+        let sortedWord;
+        if (sortedChars[0] === ".") {
+          while (sortedChars[0] === ".") {
+            sortedChars.shift();
+          }
+          sortedWord = sortedChars.join(".*");
+        } else {
+          sortedWord = sortedChars.join("");
+        }
+        console.log(sortedWord);
+        // const sortedWord = sortedChars.join(sortedChars[0] === "." ? ".*" : "");
+        const queryRegexp = new RegExp("^" + sortedWord + "$");
 
         for (const key in this.dictionary) {
           if (
             key.length === wordLen &&
-            key.split("").sort().join("") === sortedWord
+            queryRegexp.test(key.split("").sort().join(""))
           ) {
             this.completions.push(key);
           }
