@@ -83,7 +83,6 @@ export default {
             }
         }
 
-
         if (this.completions.length > 0) {
           if (this.completions[0] === this.upperCaseWord) {
             this.isWord = true;
